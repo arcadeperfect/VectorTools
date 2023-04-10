@@ -10,6 +10,8 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
+using UnityEngine;
 
 namespace Clipper2Lib
 {
@@ -141,6 +143,7 @@ namespace Clipper2Lib
         // the solution should retain the orientation of the input
         ReverseSolution = ReverseSolution != _groupList[0].pathsReversed
       };
+
 #if USINGZ
       c.ZCallback = ZCallback;
 #endif
@@ -480,7 +483,9 @@ namespace Clipper2Lib
       OffsetPolygon(group, path);
     }
 
-    private void OffsetOpenPath(Group group, Path64 path)
+    
+    
+    private void _OffsetOpenPath(Group group, Path64 path)
     {
       group.outPath = new Path64();
       int highI = path.Count - 1;
@@ -546,6 +551,33 @@ namespace Clipper2Lib
       for (int i = highI, k = 0; i > 0; i--)
         OffsetPoint(group, path, i, ref k);
 
+      group.outPaths.Add(group.outPath);
+    }
+    private void OffsetOpenPath(Group group, Path64 path)
+    {
+      group.outPath = new Path64();
+      int highI = path.Count - 1;
+
+      // do the line start cap
+      DoSquare(group, path, 0, 0);
+      
+      // offset the left side going forward
+      for (int i = 1, k = 0; i < highI; i++)
+        OffsetPoint(group, path, i, ref k);
+      
+      // reverse normals ...
+      for (int i = highI; i > 0; i--)
+        _normals[i] = new PointD(-_normals[i - 1].x, -_normals[i - 1].y);
+      _normals[0] = _normals[highI];
+      
+      // do the line end cap
+      DoSquare(group, path, highI, highI);
+      
+      // offset the left side going back
+      for (int i = highI, k = 0; i > 0; i--)
+        OffsetPoint(group, path, i, ref k);
+
+      
       group.outPaths.Add(group.outPath);
     }
 
@@ -637,7 +669,7 @@ namespace Clipper2Lib
           BuildNormals(path);
           if (_endType == EndType.Polygon) OffsetPolygon(group, path);
           else if (_endType == EndType.Joined) OffsetOpenJoined(group, path);
-          else OffsetOpenPath(group, path);
+          else _OffsetOpenPath(group, path);
         }
       }
       _solution.AddRange(group.outPaths);

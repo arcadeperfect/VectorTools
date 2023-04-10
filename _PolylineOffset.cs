@@ -9,7 +9,7 @@ using UnityEngine;
 /// Very simple polyline offset algorithm
 /// </summary>
 
-class PolylineOffset
+class _PolylineOffset
 {
     public static List<Vector2> OffsetPolyline(List<Vector2> input, float offset)
     {
