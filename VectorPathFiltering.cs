@@ -169,6 +169,7 @@ namespace VectorTools
 
             return smoothedLine;
         }
+
         /// <summary>
         /// Generates a Gaussian kernel.
         /// </summary>
@@ -194,6 +195,16 @@ namespace VectorTools
 
             return kernel;
         }
+
+        public static Vector2[] SmoothLineFaster(Vector2[] inputLine, int windowSize, float sigma, float lerp)
+        {
+            Vector2[] originalLine = inputLine.Clone() as Vector2[];
+            var smoothedLine = SmoothLineFaster(inputLine, windowSize, sigma);
+
+            return originalLine.Lerp(smoothedLine, lerp);
+
+        }
+
 
         /// <summary>
         /// Smooths a path using a Gaussian filter, but with a faster implementation maybe?

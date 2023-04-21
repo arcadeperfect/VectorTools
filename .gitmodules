@@ -1,0 +1,3 @@
+[submodule "FftSharp"]
+	path = FftSharp
+	url = https://github.com/swharden/FftSharp.git

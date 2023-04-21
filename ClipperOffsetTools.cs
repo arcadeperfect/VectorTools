@@ -8,7 +8,7 @@ namespace VectorTools
 {
     public class ClipperOffsetTools
     {
-        public static int ClipperScale = 100000;
+        public static int ClipperScale = 1000000;
         
         
         // private Clipper2Lib.ClipperOffset _clipperOffset;
